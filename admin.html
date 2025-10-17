@@ -1,0 +1,89 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin - SmartParking</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+  <div th:replace="fragments/header :: *"></div>
+  <div class="container my-4">
+    <h3>Admin Dashboard</h3>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h5>Manage Slots</h5>
+            <form th:action="@{/admin/slot/add}" method="post" class="row g-2">
+              <div class="col"><input name="label" class="form-control" placeholder="Label (A3)" required/></div>
+              <div class="col"><input name="type" class="form-control" placeholder="Type (regular)" required/></div>
+              <div class="col"><input name="price" type="number" step="0.01" value="15.0" class="form-control" required/></div>
+              <div class="col-12"><button class="btn btn-success">Add Slot</button></div>
+            </form>
+            <hr/>
+            <table class="table">
+              <thead><tr><th>Label</th><th>Type</th><th>Price/hr</th><th>Occupied</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr th:each="s : ${slots}">
+                  <td th:text="${s.label}">A1</td>
+                  <td th:text="${s.type}">regular</td>
+                  <td th:text="${s.pricePerHour}">15</td>
+                  <td th:text="${s.occupied}">false</td>
+                  <td>
+                    <form th:action="@{/admin/slot/remove}" method="post">
+                      <input type="hidden" name="slotId" th:value="${s.id}" />
+                      <button class="btn btn-sm btn-danger" th:if="${!s.occupied}">Remove</button>
+                    </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h5>All Bookings</h5>
+            <table class="table table-sm">
+              <thead><tr><th>#</th><th>User</th><th>Slot</th><th>Start</th><th>End</th><th>Price</th></tr></thead>
+              <tbody>
+                <tr th:each="b,iter : ${bookings}">
+                  <td th:text="${iter.index + 1}">1</td>
+                  <td th:text="${b.username}">user</td>
+                  <td th:text="${b.slotLabel}">A1</td>
+                  <td th:text="${b.startTime}">t</td>
+                  <td th:text="${b.endTime}">-</td>
+                  <td th:text="${b.pricePaid}">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5>Users</h5>
+            <table class="table table-sm">
+              <thead><tr><th>#</th><th>Username</th><th>Name</th><th>Admin</th></tr></thead>
+              <tbody>
+                <tr th:each="u,iter : ${users}">
+                  <td th:text="${iter.index + 1}">1</td>
+                  <td th:text="${u.username}">u</td>
+                  <td th:text="${u.fullName}">name</td>
+                  <td th:text="${u.admin}">false</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
